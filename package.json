@@ -20,6 +20,8 @@
   "homepage": "https://github.com/ArthurSippel/Projeto-Cadastro-Transportadoras#readme",
   "dependencies": {
     "ejs": "^5.0.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mysql2": "^3.22.5"
   }
 }

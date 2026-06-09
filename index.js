@@ -1,11 +1,22 @@
 const express = require('express');
+const session = require('express-session');
 const mysql = require('mysql2');
-
+const path = require('path');
 const app = express();
+const porta = 3000 //define cód de porta utilizada
 
-const porta = 3000
+app.use(express.urlencoded({ extended: true })); //configuração para uso de 'url extension'
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname,"public"))) //configuração para utilizar a pasta public em arquivos estáticos (css, imagens e JavaScript no front)
+
+app.use(session({ //configuração para uso de 'session'
+    secret: 'chave-senha',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {maxAge: 108000000 }
+
+}));
+
 app.set('view engine', 'ejs');
 
 const conectar = mysql.createConnection({
@@ -15,9 +26,34 @@ const conectar = mysql.createConnection({
     database: 'transp'
 });
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // PÁGINA INICIAL
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 app.get('/', (req, res) => {
-    res.render('index');
+    res.render('login');
+});
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// LOGIN
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//rota página login
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+//rota para fazer login
+app.post('/login/autenticacao', (req,res) => {
+    const { username, password } = req.body;
+    //Exemplo simples de autenticação (tem métodos mais seguros)
+    if (username == 'admin' && password == '12345') {
+        req.session.user = username;
+        res.send('Login Bem-Sucedido!');
+    } else {
+        res.send('Usuário e/ou Senha incorretos');
+    }
 });
 
 
@@ -237,4 +273,8 @@ app.get('/categorias/deletar/:id', (req, res) => {
             res.redirect('/categorias');
         }
     );
+});
+
+app.listen(porta, () => {
+    console.log(`Servidor rodando: http://localhost:${porta}`);
 });
