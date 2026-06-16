@@ -9,14 +9,16 @@
 <body>
     <div class = 'caixa_login'>
 
-        <label> LOGIN </label>
+        <label class = "label_login" > LOGIN </label>
 
-        <input type = 'text' class = 'caixa_texto_login' placeholder='Usuário:'>
-        
+        <form action = "/login/autenticacao" method = "POST">
+            <input type = 'text' name = 'usuario' class = 'caixa_texto_login' placeholder='Usuário:'>
 
-        <input type = 'text' class = 'caixa_texto_login' placeholder='Senha:'>
+            <input type = 'password' name = 'senha' class = 'caixa_texto_login' placeholder='Senha:'>
 
-        <button class = 'btn_login'> LOGIN </button>
+            <button type = "submit" class = 'btn_login'> LOGIN </button>
+        </form>
+
     </div>
     
 </body>

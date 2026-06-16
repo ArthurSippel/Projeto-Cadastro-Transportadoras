@@ -27,12 +27,27 @@ const conectar = mysql.createConnection({
 });
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// PÁGINA INICIAL
+// PÁGINAS
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 app.get('/', (req, res) => {
-    res.render('login');
+    if(req.session.id){
+        res.redirect('/home')
+    }else{
+        res.render('login');
+        return
+    }
+    
 });
 
+
+app.get('/home', (req, res) => {
+    res.render('home');
+});
+
+
+app.get('/erro_login', (req, res) => {
+    res.render('erro_login');
+});
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,15 +61,31 @@ app.get('/login', (req, res) => {
 
 //rota para fazer login
 app.post('/login/autenticacao', (req,res) => {
-    const { username, password } = req.body;
-    //Exemplo simples de autenticação (tem métodos mais seguros)
-    if (username == 'admin' && password == '12345') {
-        req.session.user = username;
-        res.send('Login Bem-Sucedido!');
-    } else {
-        res.send('Usuário e/ou Senha incorretos');
-    }
-});
+
+    const { usuario, senha } = req.body;
+
+    conectar.query(
+        'SELECT * FROM usuarios WHERE usuario = ? and senha = ?',
+        [usuario, senha],
+        (err, results) => {
+            if (err) {
+                res.redirect('/erro_login');
+                return
+            }
+
+            if (!results[0]) {
+                res.redirect('/erro_login');
+                return
+            }
+
+            const registro = results[0];
+            req.session.id = registro.id;
+
+            res.redirect('/home');
+        }
+    )
+})
+
 
 
 
