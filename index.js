@@ -1,5 +1,7 @@
 const express = require('express');
 const session = require('express-session');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const mysql = require('mysql2');
 const path = require('path');
 const app = express();
@@ -40,14 +42,28 @@ app.get('/', (req, res) => {
 });
 
 
+
 app.get('/home', (req, res) => {
     res.render('home');
 });
 
 
+
 app.get('/erro_login', (req, res) => {
     res.render('erro_login');
 });
+
+
+
+app.get('/erro_cadastro', (req, res) => {
+    res.render('erro_cadastro');
+});~
+
+
+
+app.get('/transportadoras', (req, res) => {
+    res.render('transportadoras');
+});~
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -59,34 +75,74 @@ app.get('/login', (req, res) => {
     res.render('login');
 });
 
+
 //rota para fazer login
-app.post('/login/autenticacao', (req,res) => {
+app.post('/login/autenticacao', async (req,res) => {
 
-    const { usuario, senha } = req.body;
+    usuario = req.body.usuario;
+    senha = req.body.senha;
 
-    conectar.query(
-        'SELECT * FROM usuarios WHERE usuario = ? and senha = ?',
-        [usuario, senha],
-        (err, results) => {
-            if (err) {
-                res.redirect('/erro_login');
-                return
-            }
+        const [results] = await conectar.promise().query(
+            'SELECT * FROM usuarios WHERE usuario = ? and senha = ?',
+            [usuario]
+        );
 
-            if (!results[0]) {
-                res.redirect('/erro_login');
-                return
-            }
+        if (results.length === 0) {
+            res.redirect('/erro_login');
+            return
+        }   
 
-            const registro = results[0];
-            req.session.id = registro.id;
+        const senhaCorreta = await bcrypt.compare(
+            senha, 
+            registro.senha
+        );
 
-            res.redirect('/home');
+        if (!senhaCorreta || usuario === '' || senha === '') {
+            res.redirect('/erro_login');
+            return
         }
-    )
+
+        const registro = results[0];
+        req.session.id = registro.id;
+
+    res.redirect('/home');
 })
 
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// CADASTRO
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+app.get('/cadastro', (req, res) => {
+    res.render('cadastro');
+});
+
+//rota para fazer cadastro
+app.post('/cadastro/autenticacao', async (req,res) => {
+
+    usuario = req.body.usuario;
+    senha = req.body.senha;
+    var hash = await bcrypt.hash(senha, saltRounds);
+
+    conectar.query(
+        'INSERT INTO usuarios (usuario, senha) VALUES (?, ?)',
+        [usuario, hash],
+
+        (err, results) => {
+            if (err) {
+                res.redirect('/erro_cadastro');
+                return
+            }
+
+            if (usuario === '' || senha === '') {
+                res.redirect('/erro_cadastro');
+                return
+            }
+
+            res.redirect('/login');
+        }
+    )
+})
 
 
 
