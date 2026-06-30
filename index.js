@@ -1,11 +1,17 @@
 const express = require('express');
 const session = require('express-session');
+
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
 const mysql = require('mysql2');
 const path = require('path');
+
 const app = express();
 const porta = 3000 //define cód de porta utilizada
+
+const authMiddleware = require('./middlewares/middlewares'); // Middlewares
+
 
 app.use(express.urlencoded({ extended: true })); //configuração para uso de 'url extension'
 
@@ -27,6 +33,8 @@ const conectar = mysql.createConnection({
     password: 'senai',
     database: 'transp'
 });
+
+
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // PÁGINAS
@@ -57,13 +65,14 @@ app.get('/erro_login', (req, res) => {
 
 app.get('/erro_cadastro', (req, res) => {
     res.render('erro_cadastro');
-});~
+});
 
 
 
 app.get('/transportadoras', (req, res) => {
     res.render('transportadoras');
-});~
+});
+
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -109,6 +118,16 @@ app.post('/login/autenticacao', async (req,res) => {
 })
 
 
+// rota para fazer logout
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.send('Erro ao fazer logout');
+        }
+        res.redirect('/login');
+    });
+});
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // CADASTRO
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -152,7 +171,7 @@ app.post('/cadastro/autenticacao', async (req,res) => {
 
 
 //rota página transportadoras
-app.get('/transportadoras', (req, res) => {
+app.get('/transportadoras', authMiddleware, (req, res) => {
 
     conectar.query('SELECT * FROM transportadoras', (err, results) => {
 
@@ -167,12 +186,12 @@ app.get('/transportadoras', (req, res) => {
 });
 
 //rota para a pág do form de transportadoras
-app.get('/transportadoras/form', (req, res) => {
+app.get('/transportadoras/form', authMiddleware, (req, res) => {
     res.render('form', { tipo: 'transportadoras' });
 });
 
 //rota para os dados passarem form -> banco
-app.post('/transportadoras/adicionar', (req, res) => {
+app.post('/transportadoras/adicionar', authMiddleware, (req, res) => {
 
     const { nome_transp, veiculos_transp, regiao_transp } = req.body;
 
@@ -192,7 +211,7 @@ app.post('/transportadoras/adicionar', (req, res) => {
 });
 
 //rota para a pág de edição
-app.get('/transportadoras/editar/:id', (req, res) => {
+app.get('/transportadoras/editar/:id', authMiddleware, (req, res) => {
 
     conectar.query(
         'SELECT * FROM transportadoras WHERE id_transp = (?)',
@@ -213,13 +232,13 @@ app.get('/transportadoras/editar/:id', (req, res) => {
 });
 
 //rota para editar dados form -> banco
-app.post('/transportadoras/atualizar', (req, res) => {
+app.post('/transportadoras/atualizar', authMiddleware, (req, res) => {
 
     const { id_transp, nome_transp, veiculos_transp, regiao_transp } = req.body;
 
     conectar.query(
         'UPDATE transportadoras SET nome_transp=?, veiculos_transp=?, regiao_transp=? WHERE id_transp=?',
-        [nome_clientes, email_clientes, telefone_clientes, id_clientes],
+        [nome_transp, veiculos_transp, regiao_transp, id_transp],
         (err) => {
 
             if (err) {
@@ -233,7 +252,7 @@ app.post('/transportadoras/atualizar', (req, res) => {
 });
 
 //rota deletar transportadora
-app.get('/transportadoras/deletar/:id', (req, res) => {
+app.get('/transportadoras/deletar/:id', authMiddleware, (req, res) => {
 
     conectar.query(
         'DELETE FROM transportadoras WHERE id_transp=?',
@@ -260,7 +279,7 @@ app.get('/transportadoras/deletar/:id', (req, res) => {
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //rota para pág das regiões
-app.get('/regioes', (req, res) => {
+app.get('/regioes', authMiddleware, (req, res) => {
 
     conectar.query('SELECT * FROM regioes', (err, results) => {
 
@@ -276,19 +295,19 @@ app.get('/regioes', (req, res) => {
 
 
 //rota para pág do form de regiões
-app.get('/regioes/form', (req, res) => {
+app.get('/regioes/form', authMiddleware, (req, res) => {
     res.render('form', { tipo: 'regioes' });
 });
 
 
 //rota rota para os dados passarem form -> banco
-app.post('/regioes/adicionar', (req, res) => {
+app.post('/regioes/adicionar', authMiddleware, (req, res) => {
 
     const { nome_regioes } = req.body; /// PAREI AQUI ////////////////////////////////////////////////
 
     conectar.query(
-        'INSERT INTO categorias (nome_categorias) VALUES (?)',
-        [nome_categorias],
+        'INSERT INTO regioes (nome_regioes) VALUES (?)',
+        [nome_regioes],
         (err) => {
 
             if (err) {
@@ -296,27 +315,27 @@ app.post('/regioes/adicionar', (req, res) => {
                 return res.send('Erro ao cadastrar');
             }
 
-            res.redirect('/categorias');
+            res.redirect('/regioes');
         }
     );
 });
 
 
 //rota para a pág de edição
-app.get('/categorias/editar/:id', (req, res) => {
+app.get('/regioes/editar/:id', authMiddleware, (req, res) => {
 
     conectar.query(
-        'SELECT * FROM categorias WHERE id_categorias = (?)',
+        'SELECT * FROM regioes WHERE id_regioes = (?)',
         [req.params.id],
         (err, results) => {
 
             if (err) {
                 console.error(err);
-                return res.send('Erro ao buscar categoria');
+                return res.send('Erro ao buscar região');
             }
 
             res.render('editar', {
-                tipo: 'categoria',
+                tipo: 'regioes',
                 registro: results[0]
             });
         }
@@ -325,13 +344,13 @@ app.get('/categorias/editar/:id', (req, res) => {
 
 
 //rota para editar dados form -> banco
-app.post('/categorias/atualizar', (req, res) => {
+app.post('/regioes/atualizar', authMiddleware, (req, res) => {
 
-    const { id_categorias, nome_categorias } = req.body;
+    const { id_regioes, nome_regioes } = req.body;
 
     conectar.query(
-        'UPDATE categorias SET nome_categorias=? WHERE id_categorias=?',
-        [ nome_categorias, id_categorias ],
+        'UPDATE regioes SET nome_regioes=? WHERE id_regioes=?',
+        [ nome_regioes, id_regioes ],
         (err) => {
 
             if (err) {
@@ -339,16 +358,16 @@ app.post('/categorias/atualizar', (req, res) => {
                 return res.send('Erro ao atualizar');
             }
 
-            res.redirect('/categorias');
+            res.redirect('/regioes');
         }
     );
 });
 
 //rota deletar produto
-app.get('/categorias/deletar/:id', (req, res) => {
+app.get('/regioes/deletar/:id', authMiddleware, (req, res) => {
 
     conectar.query(
-        'DELETE FROM categorias WHERE id_categorias=?',
+        'DELETE FROM regioes WHERE id_regioes=?',
         [req.params.id],
         (err) => {
 
@@ -357,7 +376,7 @@ app.get('/categorias/deletar/:id', (req, res) => {
                 return res.send('Erro ao deletar');
             }
 
-            res.redirect('/categorias');
+            res.redirect('/regioes');
         }
     );
 });
