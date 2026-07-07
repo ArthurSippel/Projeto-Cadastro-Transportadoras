@@ -225,7 +225,7 @@ app.get('/transportadoras/editar/:id', authMiddleware, (req, res) => {
 
             res.render('editar', {
                 tipo: 'transportadoras',
-                registro: results[0]
+                registros: results[0]
             });
         }
     );

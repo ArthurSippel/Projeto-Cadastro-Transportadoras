@@ -7,6 +7,36 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Nº Veículos</th>
+            <th>Região</th>
+        </tr>
+
+        <% registros.forEach(transportadoras => { %>
+            <tr>
+                <td><%= transportadoras.id_transp %></td>
+                <td><%= transportadoras.nome_transp %></td>
+                <td><%= transportadoras.veiculos_transp %></td>
+                <td><%= transportadoras.regiao_transp %></td>
+
+                <td class = "btns_table">
+                    <a href="/transportadoras/editar/<%= transportadoras.id_transp %>">
+                        <button class = "btn_edit">Editar</button>
+                    </a>
+
+                    <a href="/transportadoras/deletar/<%= transportadoras.id_transp %>" onclick="return confirm('Deseja deletar?')">
+                        <button class = "btn_del">Deletar</button>
+                    </a>
+
+                    <a href="/transportadoras/form">
+                        <button class="btn_novo">+ Nova Transportadora</button>
+                    </a>
+                </td>
+            </tr>
+        <% }) %>
+    </table>
 </body>
 </html>
