@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TranspADMIN</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class = 'caixa_login'>
+
+        <label class = "label_login" > LOGIN </label>
+
+        <form action = "/login/autenticacao" method = "POST">
+            <input type = 'text' name = 'usuario' class = 'caixa_texto_login' placeholder='Usuário:'>
+
+            <input type = 'password' name = 'senha' class = 'caixa_texto_login' placeholder='Senha:'>
+
+            <button type = "submit" class = 'btn_login'> LOGIN </button>
+        </form>
+
+        <a href = '/cadastro'>
+            <button type = 'button' class = 'btn_login'> CADASTRAR </button>
+        </a>
+
+    </div>
+    
+</body>
+</html>
