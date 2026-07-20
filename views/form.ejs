@@ -2,28 +2,35 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TranspADMIN</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Nova Transportadora</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class = 'caixa_login'>
 
-        <label class = "label_login" > LOGIN </label>
+    <h1>Nova Transportadora</h1>
 
-        <form action = "/login/autenticacao" method = "POST">
-            <input type = 'text' name = 'usuario' class = 'caixa_texto_login' placeholder='Usuário:'>
+    <form action="/transportadoras/adicionar" method="POST">
 
-            <input type = 'password' name = 'senha' class = 'caixa_texto_login' placeholder='Senha:'>
+        <label>Nome</label><br>
+        <input type="text" name="nome_transp"><br><br>
 
-            <button type = "submit" class = 'btn_login'> LOGIN </button>
-        </form>
+        <label>Quantidade de veículos</label><br>
+        <input type="number" name="veiculos_transp"><br><br>
 
-        <a href = '/cadastro'>
-            <button type = 'button' class = 'btn_login'> CADASTRAR </button>
-        </a>
+        <label>Região</label><br>
+        <select name="id_regiao" required>
+                        <% regioes.forEach(regioes => { %>
+                            <option value="<%= regioes.id_regiao %>">
+                                <%= regioes.nome_regiao %>
+                            </option>
+                        <% }) %>
+                    </select><br><br>
 
-    </div>
-    
+        <button type="submit">
+            Salvar
+        </button>
+
+    </form>
+
 </body>
 </html>

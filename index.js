@@ -86,7 +86,7 @@ app.post('/cadastro/autenticacao', async (req, res) => {
     }
 
     
-    const [results] = conectar.query(
+    const [results] = conectar.promise().query(
         'SELECT * FROM usuarios WHERE usuario = ?',
         [usuario]
     );
@@ -98,17 +98,10 @@ app.post('/cadastro/autenticacao', async (req, res) => {
     // Criptografia senha
     const hash = await bcrypt.hash(senha, saltRounds);
 
-    conectar.query(
+    await conectar.promise().query(
         'INSERT INTO usuarios (usuario, senha) VALUES (?, ?)',
         [usuario, hash]
-
-        (err, results) => {
-            if (err) {
-                res.redirect('/erro_cadastro');
-                return
-            }
-        }
-    )
+    );
 
     res.redirect('/login');
 
@@ -127,11 +120,11 @@ app.post('/login/autenticacao', async (req, res) => {
 
 
     if (usuario === '' || senha === '') {
-        res.redirect('/erro_login');
+        return res.redirect('/erro_login');
     }
 
 
-    const [results] = conectar.query(
+    const [results] = await conectar.promise().query(
         'SELECT * FROM usuarios WHERE usuario = ?',
         [usuario]
     );
@@ -161,32 +154,39 @@ app.post('/login/autenticacao', async (req, res) => {
 
 
 //----------------------------------------------------------------------------------------------------------------------
+// ROTA DE LOGOUT
+//----------------------------------------------------------------------------------------------------------------------
+
+app.get('/logout', (req, res) => {
+
+    req.session.destroy();
+
+    res.redirect('/login');
+
+});
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------------------------------------------------------
 // ROTAS TRANSPORTADORAS
 //----------------------------------------------------------------------------------------------------------------------
 
 // Listar transportadoras
-app.get('/transportadoras', authMiddleware, (req, res) => {
+app.get('/transportadoras', authMiddleware, async (req, res) => {
 
-    conectar.query(
-        'SELECT * FROM transportadoras',
-        (err, results) => {
-
-            if (err) {
-                console.error(err);
-                return res.send('Erro ao buscar transportadoras.');
-            }
-
-            res.render('transportadoras', {
-                registros: results
-            });
-
-        }
+    const [results] = await conectar.promise().query(
+        'SELECT * FROM transportadoras'
     );
+
+    res.render('transportadoras', {
+        registros: results
+    });
 
 });
 
 
-app.get('/transportadoras/form', authMiddleware, (req, res) => {
+app.get('/transportadoras/form', authMiddleware, async (req, res) => {
 
     res.render('form', {
         tipo: 'transportadoras'
