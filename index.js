@@ -42,7 +42,7 @@ const conectar = mysql.createConnection({
 
 // Página inicial
 app.get('/', (req, res) => {
-    res.redirect('/login');
+    return res.redirect('/login');
 });
 
 // Login
@@ -82,16 +82,16 @@ app.post('/cadastro/autenticacao', async (req, res) => {
     const { usuario, senha } = req.body;
 
     if (usuario === '' || senha === '') {
-        res.redirect('/erro_cadastro');
+        return res.redirect('/erro_cadastro');
     }
 
     
-    const [results] = conectar.promise().query(
+    const [results] = await conectar.promise().query(
         'SELECT * FROM usuarios WHERE usuario = ?',
         [usuario]
     );
     if (results.length > 0) {
-        res.redirect('/erro_cadastro');
+        return res.redirect('/erro_cadastro');
     }
 
 
@@ -103,7 +103,7 @@ app.post('/cadastro/autenticacao', async (req, res) => {
         [usuario, hash]
     );
 
-    res.redirect('/login');
+    return res.redirect('/login');
 
 });
 
@@ -129,7 +129,7 @@ app.post('/login/autenticacao', async (req, res) => {
         [usuario]
     );
     if (results.length === 0) {
-        res.redirect('/erro_login');
+        return res.redirect('/erro_login');
     }
 
     const registro = results[0];
@@ -141,16 +141,16 @@ app.post('/login/autenticacao', async (req, res) => {
         registro.senha
     );
     if (!senhaCorreta) {
-        res.redirect('/erro_login');
+        return res.redirect('/erro_login');
     }
 
     // Salva usuário sessão
-    req.session.user = registro.id;
+    req.session.user = registro.id_usuario;
 
-    res.redirect('/home');
+    return res.redirect('/home');
 });
 
-//----------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ app.get('/logout', (req, res) => {
 
     req.session.destroy();
 
-    res.redirect('/login');
+    return res.redirect('/login');
 
 });
 
@@ -186,16 +186,74 @@ app.get('/transportadoras', authMiddleware, async (req, res) => {
 });
 
 
-app.get('/transportadoras/form', authMiddleware, async (req, res) => {
+// página adicionar e editar transportadoras
+app.get('/transportadoras/form', authMiddleware, (req, res) => {
+    res.render('form');
+});
 
-    res.render('form', {
-        tipo: 'transportadoras'
-    });
+
+// Adicionar transportadora
+app.post('/transportadoras/adicionar', authMiddleware, async (req, res) => {
+
+    const {nome_transp, veiculos_transp, regiao_transp} = req.body;
+
+    if (!nome_transp || !veiculos_transp || !regiao_transp) {
+        return res.send('Preencha todos os campos.');
+    }
+
+    await conectar.promise().query(
+        'INSERT INTO transportadoras (nome_transp, veiculos_transp, regiao_transp) VALUES (?, ?, ?)',
+        [nome_transp, veiculos_transp, regiao_transp]
+    );
+
+    return res.redirect('/transportadoras');
 
 });
 
 
+// página edição transportadoras
+app.get('/transportadoras/editar/:id', authMiddleware, async (req, res) => {
 
+    const [results] = await conectar.promise().query(
+        'SELECT * FROM transportadoras WHERE id_transp = ?',
+        [req.params.id]
+    );
+
+    res.render('editar', { registro: results[0] });
+
+});
+
+
+//  pagina atualizar transportadoras no banco
+app.post('/transportadoras/atualizar', authMiddleware, async (req, res) => {
+
+    const { id_transp, nome_transp, veiculos_transp, regiao_transp } = req.body;
+
+    if (!nome_transp || !veiculos_transp || !regiao_transp) {
+        return res.send('Preencha todos os campos.');
+    }
+
+    await conectar.promise().query( `UPDATE transportadoras 
+                                    SET nome_transp = ?, veiculos_transp = ?, regiao_transp = ? WHERE id_transp = ?`,
+        [ nome_transp, veiculos_transp, regiao_transp, id_transp ]
+    );
+
+    return res.redirect('/transportadoras');
+
+});
+
+
+// Deletar transportadora
+app.get('/transportadoras/deletar/:id', authMiddleware, async (req, res) => {
+
+    await conectar.promise().query(
+        'DELETE FROM transportadoras WHERE id_transp = ?',
+        [req.params.id]
+    );
+
+    return res.redirect('/transportadoras');
+
+});
 
 
 

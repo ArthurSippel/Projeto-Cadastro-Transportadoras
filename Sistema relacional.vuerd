@@ -4,7 +4,7 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": 0,
+    "scrollTop": -200,
     "scrollLeft": -6,
     "zoomLevel": 0.73,
     "show": 511,
@@ -32,12 +32,9 @@
   "doc": {
     "tableIds": [
       "OZwSugbc1vJamIHxwm9g3",
-      "HuR2vE6600S2HPBje0tj3",
       "EQrpaO1DqT7ftrAKEP7CL"
     ],
-    "relationshipIds": [
-      "iZ_j07McKMbJyeTtVjHs1"
-    ],
+    "relationshipIds": [],
     "indexIds": [],
     "memoIds": []
   },
@@ -252,18 +249,18 @@
         "tableId": "OZwSugbc1vJamIHxwm9g3",
         "name": "regiao_transp",
         "comment": "",
-        "dataType": "INT",
+        "dataType": "VARCHAR(255)",
         "default": "",
         "options": 8,
         "ui": {
-          "keys": 2,
+          "keys": 0,
           "widthName": 74,
           "widthComment": 60,
-          "widthDataType": 60,
+          "widthDataType": 81,
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1779756292629,
+          "updateAt": 1784590067992,
           "createAt": 1779756280469
         }
       },

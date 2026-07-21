@@ -7,30 +7,29 @@
 </head>
 <body>
 
-    <h1>Nova Transportadora</h1>
+    <div class="caixa_login">
 
-    <form action="/transportadoras/adicionar" method="POST">
+        <h2>Cadastrar Transportadora</h2>
 
-        <label>Nome</label><br>
-        <input type="text" name="nome_transp"><br><br>
+        <form action="/transportadoras/adicionar" method="POST">
 
-        <label>Quantidade de veículos</label><br>
-        <input type="number" name="veiculos_transp"><br><br>
+            <label>Nome:</label>
+            <input type="text" name="nome_transp" class="caixa_texto_login" required>
 
-        <label>Região</label><br>
-        <select name="id_regiao" required>
-                        <% regioes.forEach(regioes => { %>
-                            <option value="<%= regioes.id_regiao %>">
-                                <%= regioes.nome_regiao %>
-                            </option>
-                        <% }) %>
-                    </select><br><br>
+            <label>Nº de Veículos:</label>
+            <input type="number" name="veiculos_transp" class="caixa_texto_login" required>
 
-        <button type="submit">
-            Salvar
-        </button>
+            <label>Região:</label>
+            <input type="text" name="regiao_transp" class="caixa_texto_login" required>
 
-    </form>
+            <button type="submit" class="btn_login"> Salvar </button>
+
+        </form>
+        
+        <a href="/transportadoras">
+            <button type="button" class="btn_login"> Voltar </button>
+        </a>
+    </div>
 
 </body>
 </html>

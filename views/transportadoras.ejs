@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a href="/transportadoras/form">
+        <button class="btn_novo"> Nova Transportadora </button>
+    </a>
+
+    <br><br>
+
     <table>
         <tr>
             <th>ID</th>
@@ -30,10 +36,7 @@
                     <a href="/transportadoras/deletar/<%= transportadoras.id_transp %>" onclick="return confirm('Deseja deletar?')">
                         <button class = "btn_del">Deletar</button>
                     </a>
-
-                    <a href="/transportadoras/form">
-                        <button class="btn_novo">+ Nova Transportadora</button>
-                    </a>
+                    
                 </td>
             </tr>
         <% }) %>

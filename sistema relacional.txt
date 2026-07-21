@@ -1,0 +1,22 @@
+CREATE TABLE transportadoras
+(
+  id_transp       INT          NOT NULL AUTO_INCREMENT,
+  nome_transp     VARCHAR(255) NOT NULL,
+  veiculos_transp INT          NOT NULL CHECK(veiculos_transp > 0),
+  regiao_transp   VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id_transp)
+);
+
+ALTER TABLE transportadoras
+  ADD CONSTRAINT UQ_nome_transp UNIQUE (nome_transp);
+
+CREATE TABLE usuarios
+(
+  id_usuario INT          NOT NULL AUTO_INCREMENT,
+  usuario    VARCHAR(255) NOT NULL,
+  senha      VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id_usuario)
+);
+
+ALTER TABLE usuarios
+  ADD CONSTRAINT UQ_usuario UNIQUE (usuario);

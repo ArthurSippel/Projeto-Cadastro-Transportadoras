@@ -1,39 +1,148 @@
-body {
-  margin: 0;                 /* Remove as margens padrões do navegador */
-  display: flex;             /* Ativa o modo Flexbox */
-  justify-content: center;   /* Alinha horizontalmente no centro */
-  align-items: center;       /* Alinha verticalmente no centro */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.caixa_login{   
-    color: azure;
-    background-color: rgb(5, 95, 95);
-    margin: 200px;
-    padding: 70px;
-    border: 1px solid black;
-    width: 200px;
-    height: 250px;
-    flex-direction: column;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;             
-    justify-content: center;   
-    align-items: center; 
+body{
+    background-color: #f2f4f8;
+}
+
+/* ================= LOGIN / CADASTRO ================= */
+
+.caixa_login{
+    width: 350px;
+    margin: 80px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+}
+
+.caixa_login h2{
+    text-align: center;
+    margin-bottom: 25px;
+    color: #0c4a6e;
+}
+
+label{
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
 .caixa_texto_login{
-    margin-top: 40px;
-    border: 1px solid rgb(128, 127, 127);
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
     border-radius: 5px;
-    width: 200px;
-    height: 20px;
 }
 
+
 .btn_login{
-    background-color: rgb(36, 124, 124);;
-    color: azure;
-    height: 40px;
-    width: 200px;
-    border-radius: 20px;
-    margin-top: 60px;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
     border: none;
+    border-radius: 5px;
+    background: #0c4a6e;
+    color: white;
+    cursor: pointer;
+    transition: .3s;
+}
+.btn_login:hover{
+    background: #155e75;
+}
+
+
+/* ================= HOME ================= */
+
+.home{
+    text-align: center;
+    margin-top: 80px;
+}
+
+.home h1{
+    margin-bottom: 30px;
+}
+
+.home button{
+    width: 220px;
+    margin: 10px;
+}
+
+/* ================= TABELAS ================= */
+
+
+table{
+    width: 90%;
+    margin: 40px auto;
+    border-collapse: collapse;
+    background: white;
+}
+
+
+table th{
+    background: #0c4a6e;
+    color: white;
+    padding: 12px;
+}
+
+
+table td{
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+
+
+/* ================= BOTÕES ================= */
+
+.btn_novo, .btn_edit, .btn_del, .btn_salvar{
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+
+
+.btn_novo{
+    background: #16a34a;
+}
+.btn_novo:hover{
+    background: #15803d;
+}
+
+
+
+.btn_edit{
+    background: #2563eb;
+}
+.btn_edit:hover{
+    background: #1d4ed8;
+}
+
+
+
+.btn_del{
+    background: #dc2626;
+}
+.btn_del:hover{
+    background: #b91c1c;
+}
+
+
+
+.btn_salvar{
+    background: #0c4a6e;
+    width: 100%;
+    margin-top: 20px;
+}
+.btn_salvar:hover{
+    background: #155e75;
 }

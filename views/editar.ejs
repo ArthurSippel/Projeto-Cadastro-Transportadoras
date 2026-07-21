@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Transportadora</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div class="caixa_login">
+
+        <h2>Editar Transportadora</h2>
+
+        <form action="/transportadoras/atualizar" method="POST">
+
+            <!-- ID -->
+            <input type="hidden" name="id_transp" value="<%= registro.id_transp %>">
+
+            <label>Nome:</label>
+            <input type="text" name="nome_transp" class="caixa_texto_login" value="<%= registro.nome_transp %>" required>
+
+            <label>Nº de Veículos:</label>
+            <input type="number" name="veiculos_transp" class="caixa_texto_login" value="<%= registro.veiculos_transp %>" required>
+
+            <label>Região:</label>
+            <input type="text" name="regiao_transp" class="caixa_texto_login" value="<%= registro.regiao_transp %>" required>
+
+            <button type="submit" class="btn_login"> Atualizar </button>
+
+        </form>
+
+        <a href="/transportadoras">
+            <button type="button" class="btn_login"> Voltar </button>
+        </a>
+
+    </div>
+
+</body>
+</html>
